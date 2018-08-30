@@ -20,9 +20,10 @@ public:
 	bool isPrime(void);
 	void setExponent(UI_16 divisor, UI_8 num);
 	UI_8 getExponent(UI_16 divisor);
+	void allocateExponentArray(UI_16 num);
 
 private:
-	UI_8 m_naExponent[10000];
+	UI_8 *m_pExponent;
 	bool m_bFlgPrime;
 };
 
