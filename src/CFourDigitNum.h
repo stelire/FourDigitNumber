@@ -16,14 +16,24 @@ public:
 	CFourDigitNum(void);
 	~CFourDigitNum(void);
 
+	enum{
+		E_MAX_NUMBER = 9999
+	};
+
 	void SetNotPrime(void);
 	bool isPrime(void);
-	void setExponent(UI_16 divisor, UI_8 num);
-	UI_8 getExponent(UI_16 divisor);
-	void allocateExponentArray(UI_16 num);
+	bool addDivisor(UI_16 num);
+	void clearDivisor(void);
+	UI_8 getNumDivisor(void);
+	UI_16 getDivisor(UI_8 idx);
+
 
 private:
-	UI_8 *m_pExponent;
+	enum{
+		E_MAX_DIVISOR = 13
+	};
+	UI_16 m_naDivisor[E_MAX_DIVISOR];
+	UI_8 m_nIdxDivisor;
 	bool m_bFlgPrime;
 };
 

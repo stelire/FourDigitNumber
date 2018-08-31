@@ -12,16 +12,17 @@ using namespace std;
 
 int main()
 {
-	CFourDigitNum FDNum[10000];
+	CFourDigitNum FDNum[CFourDigitNum::E_MAX_NUMBER + 1];
 	UI_16 numPrime;
+	int rslt = 0;
 
 	FDNum[0].SetNotPrime();
 	FDNum[1].SetNotPrime();
 
-	numPrime = 10000 - 2;
-	for(int i=0; i<10000; i++){
+	numPrime = CFourDigitNum::E_MAX_NUMBER + 1 - 2;
+	for(int i=0; i<CFourDigitNum::E_MAX_NUMBER + 1; i++){
 		if(FDNum[i].isPrime()){
-			for(int j=i*2; j<10000; j+=i){
+			for(int j=i*2; j<CFourDigitNum::E_MAX_NUMBER + 1; j+=i){
 				if(FDNum[j].isPrime()){
 					FDNum[j].SetNotPrime();
 					numPrime--;
@@ -35,51 +36,59 @@ int main()
 	UI_16 prime[numPrime];
 	UI_16 idx = 0;
 
-	for(int i=2; i<10000; i++){
+	for(int i=2; i<CFourDigitNum::E_MAX_NUMBER + 1; i++){
 		if(FDNum[i].isPrime()){
-			prime[idx++] = i;
+			prime[idx] = i;
+			idx++;
 			cout <<' ' << i;
 		}
 		else{
-			FDNum[i].allocateExponentArray(numPrime);
 			for(int j=0; j<idx; j++){
 				UI_16 wk = i;
-				UI_8 cnt;
-				for(cnt = 0; wk%prime[j]==0; cnt++){
+				while(wk%prime[j] == 0){
+					if(!FDNum[i].addDivisor(prime[j])){
+						rslt = -1;
+					}
 					wk = wk / prime[j];
 				}
-				FDNum[i].setExponent(j, cnt);
 			}
 		}
 	}
 
 	cout << endl;
 
-	for(int i=2; i<10000; i++){
+	for(int i=2; i<CFourDigitNum::E_MAX_NUMBER + 1; i++){
 		cout << i;
 		if(FDNum[i].isPrime()){
 			cout << " is prime number.";
 		}
 		else{
-			cout << " = ";
 			bool flgFirst = true;
-			for(int j=0; j<numPrime; j++){
-				UI_8 num = FDNum[i].getExponent(j);
-				if(num){
-					if(flgFirst){
-						flgFirst = false;
-					}
-					else{
-						cout << " + ";
-					}
-					cout << prime[j] << " ^ " << (UI_16)num;
+			UI_8 numDivisor = FDNum[i].getNumDivisor();
+			UI_8 idx = 0;
+
+			cout <<" (" << (UI_16)numDivisor << ") = ";
+
+			while(idx < numDivisor){
+				UI_16 divisor = FDNum[i].getDivisor(idx);
+				UI_8 cnt;
+				idx++;
+				for(cnt=1; FDNum[i].getDivisor(idx)==divisor && idx<numDivisor; cnt++){
+					idx++;
 				}
+				if(flgFirst){
+					flgFirst = false;
+				}
+				else{
+					cout << " * ";
+				}
+				cout << divisor << " ^ " << (UI_16)cnt;
 			}
 		}
 		cout << endl;
 	}
 
-	return 0;
+	return rslt;
 }
 
 

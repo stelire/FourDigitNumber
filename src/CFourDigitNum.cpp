@@ -8,16 +8,14 @@
 #include "CFourDigitNum.h"
 
 CFourDigitNum::CFourDigitNum(void)
-	: m_pExponent()
+	: m_naDivisor()
+	, m_nIdxDivisor(0)
 	, m_bFlgPrime(true)
 {
 }
 
 CFourDigitNum::~CFourDigitNum(void)
 {
-	if(m_pExponent){
-		delete [] m_pExponent;
-	}
 }
 
 void CFourDigitNum::SetNotPrime(void)
@@ -30,26 +28,39 @@ bool CFourDigitNum::isPrime(void)
 	return m_bFlgPrime;
 }
 
-void CFourDigitNum::setExponent(UI_16 divisor, UI_8 num)
+bool CFourDigitNum::addDivisor(UI_16 num)
 {
-	if(divisor < 10000){
-		m_pExponent[divisor] = num;
+	bool flgRslt = true;
+
+	if(m_nIdxDivisor < E_MAX_DIVISOR){
+		m_naDivisor[m_nIdxDivisor] = num;
+		m_nIdxDivisor++;
 	}
+	else{
+		flgRslt = false;
+	}
+
+	return flgRslt;
 }
 
-UI_8 CFourDigitNum::getExponent(UI_16 divisor)
+void CFourDigitNum::clearDivisor(void)
 {
-	if(divisor < 10000){
-		return m_pExponent[divisor];
+	m_nIdxDivisor = 0;
+}
+
+UI_8 CFourDigitNum::getNumDivisor(void)
+{
+	return m_nIdxDivisor;
+}
+
+UI_16 CFourDigitNum::getDivisor(UI_8 idx)
+{
+	if(idx < m_nIdxDivisor){
+		return m_naDivisor[idx];
 	}
-	else {
+	else{
 		return 0;
 	}
-}
-
-void CFourDigitNum::allocateExponentArray(UI_16 num)
-{
-	m_pExponent = new UI_8[num]();
 }
 
 
